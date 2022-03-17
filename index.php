@@ -32,7 +32,7 @@
                 <div class="card-body">
                 <h5 class="card-title"><a href="submenu.php?catid=' . $id . '">' . $row['project'] . '</a></h5>
                 <p class="card-text">' . substr($row['project_desc'], 0, 110) . '...</p>
-            <a href="submenu.php?catid=' . $id . '" class="btn btn-primary">View Threads</a>
+            <a href="submenu.php?catid=' . $id . '" class="btn btn-primary">View </a>
                 </div>
             </div>
         </div>';

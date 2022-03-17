@@ -28,7 +28,7 @@ $delete = false;
 $entryError = false;
 if (isset($_GET['delete'])) {
   $sno = $_GET['delete'];
-  $sql = "DELETE FROM `custom-event-properties` WHERE `sno` = $sno";
+  $sql = "DELETE FROM `custom-event-properties` WHERE `sno` = $sno ";
   $delete = mysqli_query($conn, $sql);
 }
 
