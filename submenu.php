@@ -17,9 +17,9 @@
     <?php include "partials/_dbconnect.php"; ?>
     <div class="container">
         <?php
-        if ($_SERVER['REQUEST_METHOD'] == "GET") {
-            if (isset($_GET['catid'])) {
-                $project = $_GET['catid'];
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            if (isset($_POST['catid'])) {
+                $project = $_POST['catid'];
             }
         }
         ?>

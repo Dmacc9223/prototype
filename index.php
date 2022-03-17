@@ -16,12 +16,12 @@
     <?php include "partials/_dbconnect.php"; ?>
     <div class="container">
         <?php
-         if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
-             echo '
+        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
+            echo '
         <h2 class="text-center my-4">Projects</h2>
         <div class="row">';
         ?>
-            <?php
+        <?php
             $sql = "SELECT * FROM `projects`";
             $result = mysqli_query($conn, $sql);
             while ($row = mysqli_fetch_assoc($result)) {
@@ -32,13 +32,15 @@
                 <div class="card-body">
                 <h5 class="card-title"><a href="submenu.php?catid=' . $id . '">' . $row['project'] . '</a></h5>
                 <p class="card-text">' . substr($row['project_desc'], 0, 110) . '...</p>
-            <a href="submenu.php?catid=' . $id . '" class="btn btn-primary">View </a>
+                <form action="submenu.php" method="POST">
+                    <input type="hidden" name="catid" id="'.$id.'" value="' . $id . '">
+                <input type="submit" class="btn btn-primary" value="Submit">
+                </form>
                 </div>
             </div>
         </div>';
             }
-        }
-        else {
+        } else {
             echo '<div class="jumbotron my-4">
             <h1 class="display-4">Welcome!</h1>
             <p class="lead">You need to login first to use the website!</p>
@@ -49,8 +51,8 @@
             </p>
           </div>';
         }
-            ?>
-        </div>
+        ?>
+    </div>
     </div>
     <?php include "partials/_footer.php"; ?>
     <!-- Optional JavaScript -->
