@@ -1,8 +1,8 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     include "_dbconnect.php";
-    $psno = $_POST['psno'];
-    $pass = $_POST['loginPass'];
+    $psno = $conn->real_escape_string($_POST['psno']);
+    $pass = $conn->real_escape_string($_POST['loginPass']);
     $sql = "SELECT * FROM `users` WHERE psno = '$psno'";
     $result = mysqli_query($conn, $sql);
     $numRows = mysqli_num_rows($result);

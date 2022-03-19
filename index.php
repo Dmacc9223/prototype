@@ -30,7 +30,8 @@
             <div class="card" style="width: 18rem;">
             <img src="https://source.unsplash.com/500x400/?coding,' . $row['project'] . '" class="card-img-top" alt="...">
                 <div class="card-body">
-                <h5 class="card-title"><a href="submenu.php?catid=' . $id . '">' . $row['project'] . '</a></h5>
+                <!--<h5 class="card-title"><a href="submenu.php?catid=' . $id . '">' . $row['project'] . '</a></h5>-->
+                <h5 class="card-title">' . $row['project'] . '</h5>
                 <p class="card-text">' . substr($row['project_desc'], 0, 110) . '...</p>
                 <form action="submenu.php" method="POST">
                     <input type="hidden" name="catid" id="'.$id.'" value="' . $id . '">

@@ -2,10 +2,10 @@
 $showError = "false";
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         include '_dbconnect.php';
-        $psno = $_POST['psno'];
-        $user_email = $_POST['signupEmail'];
-        $pass = $_POST['signupPassword'];
-        $cpass = $_POST['signupcPassword'];
+        $psno = $conn->real_escape_string($_POST['psno']);
+        $user_email = $conn->real_escape_string($_POST['signupEmail']);
+        $pass = $conn->real_escape_string($_POST['signupPassword']);
+        $cpass = $conn->real_escape_string($_POST['signupcPassword']);
         $existSql = "SELECT * FROM `users` WHERE user_email = '$user_email' OR psno = '$psno'";
         $result = mysqli_query($conn, $existSql);
         $numRows = mysqli_num_rows($result);

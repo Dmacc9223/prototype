@@ -50,25 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       }
     } else {
       if ($_GET['date'] && $_GET['offense'] && $_GET['offense-desc'] && $_GET['knowledge-add'] && $_GET['response-from-team']) {
-        $date = $_GET['date'];
-        $date = str_replace("<", "&lt;", $date);
-        $date = str_replace(">", "&gt;", $date);
-        $offense = $_GET['offense'];
-        $offense = str_replace("<", "&lt;", $offense);
-        $offense = str_replace(">", "&gt;", $offense);
-        $offense = $_GET['offense'];
-        $offense = str_replace("<", "&lt;", $offense);
-        $offense = str_replace(">", "&gt;", $offense);
-        $offensedesc = $_GET['offense-desc'];
-        $offensedesc = str_replace("<", "&lt;", $offensedesc);
-        $offensedesc = str_replace(">", "&gt;", $offensedesc);
-        $knowledgeadd = $_GET['knowledge-add'];
-        $knowledgeadd = str_replace("<", "&lt;", $knowledgeadd);
-        $knowledgeadd = str_replace(">", "&gt;", $knowledgeadd);
-        $rpt = $_GET['response-from-team'];
-        $rpt = str_replace("<", "&lt;", $rpt);
-        $rpt = str_replace(">", "&gt;", $rpt);
-        $project = $_GET['project'];
+        $date = htmlspecialchars($_GET['date']);
+        $offense = htmlspecialchars($_GET['offense']);
+        $offensedesc = htmlspecialchars($_GET['offense-desc']);
+        $knowledgeadd = htmlspecialchars($_GET['knowledge-add']);
+        $rpt = htmlspecialchars($_GET['response-from-team']);
+        $project = htmlspecialchars($_GET['project']);
         $sql = "INSERT INTO `knowledge-base`(`date`, `offense`, `offense-desc`, `knowledge-add`, `response-from-team`, `project`) VALUES ('$date','$offense', '$offensedesc', '$knowledgeadd', '$rpt', '$project')";
         $result = mysqli_query($conn, $sql);
         if ($result) {
