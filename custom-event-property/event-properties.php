@@ -177,6 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   <!-- <div class="container"> -->
   <h2 class="text-center my-4">Custom Event properties </h2>
   <table class="table" id="myTable">
+  <caption>Custom Events</caption>
+
     <thead>
       <tr>
         <th scope="col">S.No.</th>

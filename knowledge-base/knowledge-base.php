@@ -200,6 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     <!-- <div class="container"> -->
     <h2 class="text-center">Log Source </h2>
     <table class="table" id="myTable">
+    <caption>Log Sources</caption>
+
         <thead>
             <tr>
                 <th scope="col">S.No.</th>
