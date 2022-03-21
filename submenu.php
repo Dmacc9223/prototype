@@ -30,7 +30,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Knowledge Base</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="knowledge-base/knowledge-base.php?project=<?php echo $project; ?>" class="btn btn-primary">View</a>
+                        <a href="knowledge-base/knowledge-base.php?project=<?php echo htmlspecialchars($project); ?>" class="btn btn-primary">View</a>
                     </div>
                 </div>
             </div>
