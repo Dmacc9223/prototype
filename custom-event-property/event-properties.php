@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         <div class="modal-body">
           <form action="event-properties.php" method="GET">
             <input type="hidden" name="snoEdit" id="snoEdit">
-            <input type="hidden" name="project" value="<?php echo $_GET['project']; ?>" id="project">
+            <input type="hidden" name="project" value="<?php $project; ?>" id="project">
             <div class="form-group">
               <label for="exampleInputEmail1">Title of the custom-event-properties</label>
               <input type="text" class="form-control" id="logsourceEdit" name="logsourceEdit" aria-describedby="emailHelp">
