@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h2 class="text-center my-4">User Management</h2>
     <div class="container">
         <table class="table" id="myTable">
+        <caption>User Management</caption>
             <thead>
                 <tr>
                     <th scope="col">S.No.</th>
