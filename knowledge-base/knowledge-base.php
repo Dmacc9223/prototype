@@ -28,40 +28,70 @@ $delete = false;
 $entryError = false;
 if (isset($_GET['delete'])) {
     $sno = $_GET['delete'];
-    $sql = "DELETE FROM `knowledge-base` WHERE `sno` = $sno";
-    $delete = mysqli_query($conn, $sql);
+    $sql = "DELETE FROM `knowledge-base` WHERE `sno` = ?";
+
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Failed!";    
+    }
+    else {
+        mysqli_stmt_bind_param($stmt, "s", $sno);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if (mysqli_stmt_execute($stmt)) {
+          $delete = true;
+        }
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if (isset($_GET['snoEdit'])) {
-      $sno = $_GET['snoEdit'];
-      $date = $_GET['dateEdit'];
-      $offense = $_GET['offenseEdit'];
-      $offensedesc = $_GET['offensedescEdit'];
-      $knowledgeadd = $_GET['knowledgeaddEdit'];
+      $sno = $conn->real_escape_string($_GET['snoEdit']);
+      $date = $conn->real_escape_string($_GET['dateEdit']);
+      $offense = $conn->real_escape_string($_GET['offenseEdit']);
+      $offensedesc = $conn->real_escape_string($_GET['offensedescEdit']);
+      $knowledgeadd = $conn->real_escape_string($_GET['knowledgeaddEdit']);
       $rpt = $_GET['rptEdit'];
-      $sql = "UPDATE `knowledge-base` SET `date`='$date',`offense`='$offense',`offense-desc`='$offensedesc', `knowledge-add`='$knowledgeadd', `response-from-team`='$rpt' WHERE `knowledge-base`.`sno`=$sno;";
-      $result = mysqli_query($conn, $sql);
-      if ($result) {
+      $sql = "UPDATE `knowledge-base` SET `date`=?,`offense`=?,`offense-desc`=?, `knowledge-add`=?, `response-from-team`=? WHERE `knowledge-base`.`sno`=?;";
+      $stmt = mysqli_stmt_init($conn);
+      if (!mysqli_stmt_prepare($stmt, $sql)) {
+          echo "Failed!";    
+      }
+      else {
+          mysqli_stmt_bind_param($stmt, "ssssss", $date, $offense, $offensedesc, $knowledgeadd, $rpt, $sno);
+          mysqli_stmt_execute($stmt);
+          $result = mysqli_stmt_get_result($stmt);
+
+      if (mysqli_stmt_execute($stmt)) {
         $edit = true;
       } else {
         echo "Error";
       }
+    }
     } else {
-      if ($_GET['date'] && $_GET['offense'] && $_GET['offense-desc'] && $_GET['knowledge-add'] && $_GET['response-from-team']) {
-        $date = htmlspecialchars($_GET['date']);
-        $offense = htmlspecialchars($_GET['offense']);
-        $offensedesc = htmlspecialchars($_GET['offense-desc']);
-        $knowledgeadd = htmlspecialchars($_GET['knowledge-add']);
-        $rpt = htmlspecialchars($_GET['response-from-team']);
-        $project = htmlspecialchars($_GET['project']);
-        $sql = "INSERT INTO `knowledge-base`(`date`, `offense`, `offense-desc`, `knowledge-add`, `response-from-team`, `project`) VALUES ('$date','$offense', '$offensedesc', '$knowledgeadd', '$rpt', '$project')";
-        $result = mysqli_query($conn, $sql);
+      if (isset($_GET['insert'])) {
+        $date = $conn->real_escape_string($_GET['date']);
+        $offense = $conn->real_escape_string($_GET['offense']);
+        $offensedesc = $conn->real_escape_string($_GET['offense-desc']);
+        $knowledgeadd = $conn->real_escape_string($_GET['knowledge-add']);
+        $rpt = $conn->real_escape_string($_GET['response-from-team']);
+        $project = $conn->real_escape_string($_GET['project']);
+        $sql = "INSERT INTO `knowledge-base`(`date`, `offense`, `offense-desc`, `knowledge-add`, `response-from-team`, `project`) VALUES (?,?,?,?,?,?)";
+
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            echo "Failed!";    
+        }
+        else {
+            mysqli_stmt_bind_param($stmt, "ssssss", $date, $offense, $offensedesc, $knowledgeadd, $rpt, $project);
+            $result = mysqli_stmt_execute($stmt);
+            // $result = mysqli_stmt_get_result($stmt);
         if ($result) {
           $insert = true;
         }
       }
+    }
     }
   }
 ?>
@@ -157,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       </div>';
     }
     if ($delete) {
-        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+        echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Success!</strong> You deleted the record successfully.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -187,8 +217,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
           $project = $_GET['project'];
         }
       }
-      $sql = "SELECT * FROM `knowledge-base` WHERE `project`=$project";
-      $result = mysqli_query($conn, $sql);
+      $sql = "SELECT * FROM `knowledge-base` WHERE `project`=?";
+
+      $stmt = mysqli_stmt_init($conn);
+      if (!mysqli_stmt_prepare($stmt, $sql)) {
+          echo "Failed!";    
+      }
+      else {
+          mysqli_stmt_bind_param($stmt, "s", $project);
+          mysqli_stmt_execute($stmt);
+          $result = mysqli_stmt_get_result($stmt);
+
+
       $sno = 0;
       while ($row = mysqli_fetch_assoc($result)) {
         $sno = $sno + 1;
@@ -213,6 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
         echo '</tr>';
       }
+    }
       ?></tbody>
     </table>
     <!-- </div> -->
@@ -225,6 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     <h1 class="text-center"> Form for adding new Note</h1>
     <form action="knowledge-base.php" method="GET">
       <input type="hidden" name="project" value="'. $project .'">
+      <input type="hidden" name="insert" value="insert">
       <div class="form-group">
         <label for="exampleInputPassword1">Date</label>
         <input type="date" class="form-control" id="date" name="date">

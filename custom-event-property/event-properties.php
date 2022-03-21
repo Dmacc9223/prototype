@@ -1,9 +1,8 @@
 <?php
-if(!isset($_SESSION)) 
-{ 
-    session_start(); 
-} 
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true) {
+if (!isset($_SESSION)) {
+  session_start();
+}
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
   header("location: /prototype");
   exit;
 }
@@ -28,41 +27,63 @@ $delete = false;
 $entryError = false;
 if (isset($_GET['delete'])) {
   $sno = $_GET['delete'];
-  $sql = "DELETE FROM `custom-event-properties` WHERE `sno` = $sno ";
-  $delete = mysqli_query($conn, $sql);
+  $sql = "DELETE FROM `custom-event-properties` WHERE `sno` = ? ";
+
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+    echo "Failed!";
+  } else {
+    mysqli_stmt_bind_param($stmt, "s", $sno);
+    $result = mysqli_stmt_execute($stmt);
+    // $result = mysqli_stmt_get_result($stmt);
+    if ($result) {
+      $delete = true;
+    }
+  }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
   if (isset($_GET['snoEdit'])) {
-    $sno = $_GET['snoEdit'];
-    $logsource = $_GET['logsourceEdit'];
-    $name = $_GET['nameEdit'];
-    $regex = $_GET['regexEdit'];
-    $sql = "UPDATE `custom-event-properties` SET `log-source-type`='$logsource',`name`='$name',`regex`='$regex' WHERE `custom-event-properties`.`sno`=$sno;";
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-      $edit = true;
+    $sno = $conn->real_escape_string($_GET['snoEdit']);
+    $logsource = $conn->real_escape_string($_GET['logsourceEdit']);
+    $name = $conn->real_escape_string($_GET['nameEdit']);
+    $regex = $conn->real_escape_string($_GET['regexEdit']);
+    $sql = "UPDATE `custom-event-properties` SET `log-source-type`=?,`name`=?,`regex`=? WHERE `custom-event-properties`.`sno`=$sno;";
+
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+      echo "Failed!";
     } else {
-      echo "Error";
+      mysqli_stmt_bind_param($stmt, "sss", $logsource, $name, $regex);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+      if (mysqli_stmt_execute($stmt)) {
+        $edit = true;
+      } else {
+        echo "Error";
+      }
     }
   } else {
-    if (!empty($_GET['log-source'] && $_GET['name'] && $_GET['regex'])) {
-      $logsource = $_GET['log-source'];
-      $logsource = str_replace("<", "&lt;", $logsource);
-      $logsource = str_replace(">", "&gt;", $logsource);
-      $name = $_GET['name'];
-      $name = str_replace("<", "&lt;", $name);
-      $name = str_replace(">", "&gt;", $name);
-      $regex = $_GET['regex'];
-      $regex = str_replace("<", "&lt;", $regex);
-      $regex = str_replace(">", "&gt;", $regex);
-      $sql = "INSERT INTO `custom-event-properties`(`log-source-type`, `name`, `regex`, `parent-id`) VALUES ('$logsource','$name', '$regex', '$project')";
-      $result = mysqli_query($conn, $sql);
-      if ($result) {
+    if (isset($_GET['insert'])) {
+      $logsource = $conn->real_escape_string($_GET['log-source']);
+      $name = $conn->real_escape_string($_GET['name']);
+      $regex = $conn->real_escape_string($_GET['regex']);
+      $sql = "INSERT INTO `custom-event-properties`(`log-source-type`, `name`, `regex`, `parent-id`) VALUES (?,?,?,?)";
+
+      $stmt = mysqli_stmt_init($conn);
+      if (!mysqli_stmt_prepare($stmt, $sql)) {
+          echo "Failed!";    
+      }
+      else {
+          mysqli_stmt_bind_param($stmt, "ssss", $logsource, $name, $regex, $project);
+          mysqli_stmt_execute($stmt);
+          $result = mysqli_stmt_get_result($stmt);
+      if (mysqli_stmt_execute($stmt)) {
         $insert = true;
       }
     }
+  }
   }
 }
 ?>
@@ -150,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     </div>';
   }
   if ($delete) {
-    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
       <strong>Success!</strong> You deleted the record successfully.
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -210,8 +231,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       <h1>Log Source</h1>
       <form action="event-properties.php" method="GET">
         <div class="form-group">
-          <input type="hidden" name="project" value="'. $project.'">
-          <label for="exampleInputEmail1">Log source type</label>
+        <input type="hidden" name="project" value="' . $project . '">
+        <input type="hidden" name="insert" value="insert">
+        <label for="exampleInputEmail1">Log source type</label>
           <input type="text" class="form-control" id="log-source" name="log-source" aria-describedby="emailHelp">
         </div>
         <div class="form-group">

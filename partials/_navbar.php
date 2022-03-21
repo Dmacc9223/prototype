@@ -7,11 +7,23 @@
   include "_dbconnect.php";
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
   $psno = $_SESSION['psno'];
-  $sql = "SELECT * FROM `users` WHERE `psno`='$psno'";
-  $result = mysqli_query($conn, $sql);
+  $sql = "SELECT * FROM `users` WHERE `psno`=?";
+
+
+  $stmt = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($stmt, $sql)) {
+      echo "Failed!";    
+  }
+  else {
+      mysqli_stmt_bind_param($stmt, "s", $psno);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
+
+
   while ($row = mysqli_fetch_assoc($result)) {
     $right = $row['rights'];
   }
+}
 }
 echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 <a class="navbar-brand" href="#">Prototype</a>
@@ -26,7 +38,7 @@ echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
   if ($right == 2) {
     echo '<li class="nav-item">
-      <a class="nav-link" href="/prototype/adminpanel.php">Manegement</a>
+      <a class="nav-link" href="/prototype/adminpanel.php">User Management</a>
       </li>';
   }
 }

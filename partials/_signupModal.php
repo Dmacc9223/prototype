@@ -19,7 +19,7 @@
                         <input type="email" class="form-control" name="signupEmail" id="signupEmail" aria-describedby="emailHelp">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
+                        <label for="exampleInputPassword1">Password (Use uppercase, lowercase and a special character)</label>
                         <input type="password" class="form-control" id="signupPassword" name="signupPassword">
                     </div>
                     <div class="form-group">

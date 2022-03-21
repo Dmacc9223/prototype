@@ -2,22 +2,24 @@
 <html lang="en">
 <?php require "partials/_dbconnect.php";
 $updatePermission = false;
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $snoEdit = $_POST['snoEdit'];
-    $currentPermission = $_POST['currentPermission'];
-    $sql = "UPDATE `users` SET `rights` = ? WHERE `users`.`sno` = $snoEdit;";
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (isset($_GET['sno'])) {
+        $sno = $_GET['sno'];
+        $sql = "UPDATE `users` SET `add_status` = '1' WHERE `users`.`sno` = $sno;";
 
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        echo "Failed!";
-    } else {
-        mysqli_stmt_bind_param($stmt, "s", $currentPermission);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            echo "Failed!";    
+        }
+        else {
+            mysqli_stmt_bind_param($stmt, "s", $sno);
+            $result = mysqli_stmt_execute($stmt);
+            // $result = mysqli_stmt_get_result($stmt);
         if ($result) {
             $updatePermission = true;
         }
     }
+}
 }
 ?>
 
@@ -102,32 +104,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <th scope="col">RPT</th>
                     <th scope="col">RPT</th>
                     <th scope="col">RPT</th>
-                    <th scope="col">RPT</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT * FROM `users`";
+                $sql = "SELECT * FROM `users` WHERE add_status=0";
                 $result = mysqli_query($conn, $sql);
                 $sno = 0;
                 $right = NULL;
                 while ($row = mysqli_fetch_assoc($result)) {
-                    if ($row['rights'] == '0') {
-                        $right = "User";
-                    } elseif ($row['rights'] == '1') {
-                        $right = "Admin";
-                    } elseif ($row['rights'] == '2') {
-                        $right = "Super Admin";
-                    }
                     $sno = $sno + 1;
                     echo '<tr>
       <th scope="row">' . $sno . '  </th>
       <td>' . $row['psno'] . '</td>
       <td>' . $row['user_email'] . '</td>
-      <td>' . $row['timestamp'] . '</td>
-      <td>' . $right . '</td>
-     
-      <td><button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Update</button>
+      <td>' . $row['timestamp'] . '</td>     
+      <td><button class="btn btn-success btn-sm my-2 my-sm-0 delete" type="submit" id="' . $row['sno'] . '">Update</button>
       </td>
     </tr>';
                 }
@@ -160,18 +152,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             element.addEventListener("click", (e) => {
                 console.log("Edit");
                 tr = e.target.parentNode.parentNode;
-                psno = tr.getElementsByTagName("td")[0].innerText;
-                user_email = tr.getElementsByTagName("td")[1].innerText;
-                timestamp = tr.getElementsByTagName("td")[2].innerText;
-                rights = tr.getElementsByTagName("td")[3].innerText;
-                psnoEdit.value = psno;
-                useremailEdit.value = user_email;
-                timestampEdit.value = timestamp;
-                rightsEdit.value = rights;
+                title = tr.getElementsByTagName("td")[0].innerText;
+                description = tr.getElementsByTagName("td")[1].innerText;
+                console.log(title);
+                console.log(description);
+                titleEdit.value = title;
+                descriptionEdit.value = description;
                 snoEdit.value = e.target.id;
                 console.log(e.target.id);
                 $('#editModal').modal('toggle');
             });
+        });
+        deletes = document.getElementsByClassName('delete');
+        Array.from(deletes).forEach((element) => {
+            element.addEventListener("click", (e) => {
+                console.log("delete", e);
+                sno = e.target.id.substr(1, );
+                console.log(sno);
+                if (confirm("Are you sure to delete this note?")) {
+                    window.location = `error.php?sno=${sno}`;
+                } else {
+                    console.log("no");
+                }
+            })
         });
     </script>
 </body>
