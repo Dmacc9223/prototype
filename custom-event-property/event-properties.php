@@ -14,13 +14,6 @@ $entryError = false;
 $delete = false;
 ?>
 <?php
-if (isset($_GET['project'])) {
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $project = $_GET['project'];
-  }
-}
-?>
-<?php
 $insert = false;
 $edit = false;
 $delete = false;
@@ -43,7 +36,9 @@ if (isset($_GET['delete'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-
+  if (isset($_GET['project'])) {
+    $project = $conn->real_escape_string($_GET['project']);
+  }
   if (isset($_GET['snoEdit'])) {
     $sno = $conn->real_escape_string($_GET['snoEdit']);
     $logsource = $conn->real_escape_string($_GET['logsourceEdit']);
@@ -73,17 +68,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
       $stmt = mysqli_stmt_init($conn);
       if (!mysqli_stmt_prepare($stmt, $sql)) {
-          echo "Failed!";    
-      }
-      else {
-          mysqli_stmt_bind_param($stmt, "ssss", $logsource, $name, $regex, $project);
-          mysqli_stmt_execute($stmt);
-          $result = mysqli_stmt_get_result($stmt);
-      if (mysqli_stmt_execute($stmt)) {
-        $insert = true;
+        echo "Failed!";
+      } else {
+        mysqli_stmt_bind_param($stmt, "ssss", $logsource, $name, $regex, $project);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if (mysqli_stmt_execute($stmt)) {
+          $insert = true;
+        }
       }
     }
-  }
   }
 }
 ?>
