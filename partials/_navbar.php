@@ -69,7 +69,7 @@ if (isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "true") {
 </div>';
 } else {
   if (isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "false") {
-    $showError = $_GET['error'];
+    $showError = $conn->real_escape_string($_GET['error']);
     if ($_GET['error'] != 'false') {
       echo '<div class="alert alert-danger alert-dismissible fade show my-0" role="alert">
       <strong>Error!</strong> ' . $showError . '.
@@ -81,7 +81,7 @@ if (isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "true") {
   }
 }
 if (isset($_GET['loginsuccess'])) {
-  $loginSuccess = $_GET['loginsuccess'];
+  $loginSuccess = $conn->real_escape_string($_GET['loginsuccess']);
   if ($loginSuccess != 'true') {
     echo '<div class="alert alert-danger alert-dismissible fade show my-0" role="alert">
   <strong>Error!</strong> ' . $loginSuccess . '.
