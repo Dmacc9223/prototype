@@ -16,8 +16,8 @@ $delete = false;
 ?>
 <?php
 if (isset($_GET['project'])) {
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-        $project = $_GET['project'];
+  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      $project = $conn->real_escape_string($_GET['project']);
     }
 }
 ?>
@@ -47,6 +47,7 @@ if (isset($_GET['delete'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     if (isset($_GET['snoEdit'])) {
+      $sno = $conn->real_escape_string($_GET['snoEdit']);
       $sno = $conn->real_escape_string($_GET['snoEdit']);
       $date = $conn->real_escape_string($_GET['dateEdit']);
       $offense = $conn->real_escape_string($_GET['offenseEdit']);
@@ -214,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         <?php
       if ($_SERVER['REQUEST_METHOD'] == "GET") {
         if (isset($_GET['project'])) {
-          $project = $_GET['project'];
+          $project = $conn->real_escape_string($_GET['project']);
         }
       }
       $sql = "SELECT * FROM `knowledge-base` WHERE `project`=?";
