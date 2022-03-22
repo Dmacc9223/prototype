@@ -15,11 +15,22 @@ $entryError = false;
 $delete = false;
 ?>
 <?php
-if (isset($_GET['project'])) {
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      $project = $conn->real_escape_string($_GET['project']);
-    }
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (isset($_POST['project'])) {
+    $project = $conn->real_escape_string($_POST['project']);
+    $_SESSION['project'] = $project;
+  }
 }
+// if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+//   if (!isset($_SESSION['project'])) {
+//     $_SESSION['project'] = $project;
+//   }
+// } 
+if (isset($_SESSION['project'])) {
+  $project = $_SESSION['project'];
+  $project;
+}
+
 ?>
 <?php
 $insert = false;
@@ -44,16 +55,16 @@ if (isset($_GET['delete'])) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    if (isset($_GET['snoEdit'])) {
-      $sno = $conn->real_escape_string($_GET['snoEdit']);
-      $sno = $conn->real_escape_string($_GET['snoEdit']);
-      $date = $conn->real_escape_string($_GET['dateEdit']);
-      $offense = $conn->real_escape_string($_GET['offenseEdit']);
-      $offensedesc = $conn->real_escape_string($_GET['offensedescEdit']);
-      $knowledgeadd = $conn->real_escape_string($_GET['knowledgeaddEdit']);
-      $rpt = $_GET['rptEdit'];
+    if (isset($_POST['snoEdit'])) {
+      $sno = $conn->real_escape_string($_POST['snoEdit']);
+      $sno = $conn->real_escape_string($_POST['snoEdit']);
+      $date = $conn->real_escape_string($_POST['dateEdit']);
+      $offense = $conn->real_escape_string($_POST['offenseEdit']);
+      $offensedesc = $conn->real_escape_string($_POST['offensedescEdit']);
+      $knowledgeadd = $conn->real_escape_string($_POST['knowledgeaddEdit']);
+      $rpt = $_POST['rptEdit'];
       $sql = "UPDATE `knowledge-base` SET `date`=?,`offense`=?,`offense-desc`=?, `knowledge-add`=?, `response-from-team`=? WHERE `knowledge-base`.`sno`=?;";
       $stmt = mysqli_stmt_init($conn);
       if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -71,13 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       }
     }
     } else {
-      if (isset($_GET['insert'])) {
-        $date = $conn->real_escape_string($_GET['date']);
-        $offense = $conn->real_escape_string($_GET['offense']);
-        $offensedesc = $conn->real_escape_string($_GET['offense-desc']);
-        $knowledgeadd = $conn->real_escape_string($_GET['knowledge-add']);
-        $rpt = $conn->real_escape_string($_GET['response-from-team']);
-        $project = $conn->real_escape_string($_GET['project']);
+      if (isset($_POST['insert'])) {
+        $date = $conn->real_escape_string($_POST['date']);
+        $offense = $conn->real_escape_string($_POST['offense']);
+        $offensedesc = $conn->real_escape_string($_POST['offense-desc']);
+        $knowledgeadd = $conn->real_escape_string($_POST['knowledge-add']);
+        $rpt = $conn->real_escape_string($_POST['response-from-team']);
+        $project = $conn->real_escape_string($_POST['project']);
         $sql = "INSERT INTO `knowledge-base`(`date`, `offense`, `offense-desc`, `knowledge-add`, `response-from-team`, `project`) VALUES (?,?,?,?,?,?)";
 
         $stmt = mysqli_stmt_init($conn);
@@ -124,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="knowledge-base.php" method="GET">
+                    <form action="knowledge-base.php" method="POST">
                         <input type="hidden" name="snoEdit" id="snoEdit">
                         <input type="hidden" name="project" id="project" value="<?php echo $project ?>">
                         <div class="form-group">
@@ -215,9 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         </thead>
         <tbody>
         <?php
-      if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        if (isset($_GET['project'])) {
-          $project = $conn->real_escape_string($_GET['project']);
+      if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        if (isset($_POST['project'])) {
+          $project = $conn->real_escape_string($_POST['project']);
         }
       }
       $sql = "SELECT * FROM `knowledge-base` WHERE `project`=?";
@@ -267,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       echo '
   <div class="container my-4" id="addnotes">
     <h1 class="text-center"> Form for adding new Note</h1>
-    <form action="knowledge-base.php" method="GET">
+    <form action="knowledge-base.php" method="POST">
       <input type="hidden" name="project" value="'. $project .'">
       <input type="hidden" name="insert" value="insert">
       <div class="form-group">
@@ -342,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         console.log("delete", e);
         sno = e.target.id.substr(1, );
         if (confirm("Are you sure to delete this note?")) {
-          window.location = `knowledge-base.php?delete=${sno}&project=${<?php echo $project ?>}`;
+          window.location = `knowledge-base.php?delete=${sno}`;
         } else {
           console.log("no");
         }
