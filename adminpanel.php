@@ -1,10 +1,19 @@
+<?php
+if (!isset($_SESSION)) {
+  session_start();
+}
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
+  header("location: /prototype");
+  exit;
+}
+?>
 <!doctype html>
 <html lang="en">
 <?php require "partials/_dbconnect.php";
 $updatePermission = false;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $snoEdit = $_POST['snoEdit'];
-    $currentPermission = $_POST['currentPermission'];
+    $snoEdit = $conn->real_escape_string($_POST['snoEdit']);
+    $currentPermission = $conn->real_escape_string($_POST['currentPermission']);
     $sql = "UPDATE `users` SET `rights` = ? WHERE `users`.`sno` = $snoEdit;";
 
     $stmt = mysqli_stmt_init($conn);
@@ -12,8 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Failed!";
     } else {
         mysqli_stmt_bind_param($stmt, "s", $currentPermission);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $result = mysqli_stmt_execute($stmt);
         if ($result) {
             $updatePermission = true;
         }
@@ -108,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT * FROM `users`";
+                $sql = "SELECT * FROM `users` WHERE `add_status`=1";
                 $result = mysqli_query($conn, $sql);
                 $sno = 0;
                 $right = NULL;

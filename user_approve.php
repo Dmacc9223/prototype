@@ -1,25 +1,43 @@
+<?php
+if (!isset($_SESSION)) {
+    session_start();
+}
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
+    header("location: /prototype");
+    exit;
+}
+?>
 <!doctype html>
 <html lang="en">
 <?php require "partials/_dbconnect.php";
 $updatePermission = false;
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (isset($_GET['sno'])) {
-        $sno = $_GET['sno'];
-        $sql = "UPDATE `users` SET `add_status` = '1' WHERE `users`.`sno` = $sno;";
-
-        $stmt = mysqli_stmt_init($conn);
-        if (!mysqli_stmt_prepare($stmt, $sql)) {
-            echo "Failed!";    
-        }
-        else {
-            mysqli_stmt_bind_param($stmt, "s", $sno);
-            $result = mysqli_stmt_execute($stmt);
-            // $result = mysqli_stmt_get_result($stmt);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $snoEdit = $conn->real_escape_string($_POST['snoEdit']);
+    $currentPermission = $conn->real_escape_string($_POST['currentPermission']);
+    $sql = "UPDATE `users` SET `rights` = ? WHERE `users`.`sno` = $snoEdit;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Failed!";
+    } else {
+        mysqli_stmt_bind_param($stmt, "s", $currentPermission);
+        $result = mysqli_stmt_execute($stmt);
         if ($result) {
+            $sql = "UPDATE `users` SET `add_status` = ? WHERE `users`.`sno` = $snoEdit;";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                echo "Failed!";
+            } else {
+                $val = 1;
+                mysqli_stmt_bind_param($stmt, "s", $val);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                if ($result) {
+                    $updatePermission = true;
+                }
+            }
             $updatePermission = true;
         }
     }
-}
 }
 ?>
 
@@ -46,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="adminpanel.php" method="POST">
+                    <form action="user_approve.php" method="POST">
                         <input type="hidden" name="snoEdit" id="snoEdit">
                         <div class="form-group">
                             <label for="exampleInputEmail1">PS Number</label>
@@ -55,10 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         <div class="form-group">
                             <label for="exampleInputPassword1">Email Address</label>
                             <input type="text" class="form-control" disabled id="useremailEdit" name="useremailEdit">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Current Role</label>
-                            <input type="text" class="form-control" id="rightsEdit" name="rightsEdit" disabled>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Description of the knowledge-base</label>
@@ -94,22 +108,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       </div>';
     }
     ?>
-    <h2 class="text-center my-4">User Approval</h2>
+    <h2 class="text-center my-4">User Management</h2>
     <div class="container">
         <table class="table" id="myTable">
-        <caption>User Approval</caption>
+            <caption>User Management</caption>
             <thead>
                 <tr>
                     <th scope="col">S.No.</th>
-                    <th scope="col">Offense</th>
-                    <th scope="col">RPT</th>
-                    <th scope="col">RPT</th>
-                    <th scope="col">RPT</th>
+                    <th scope="col">PS No</th>
+                    <th scope="col">User Email</th>
+                    <th scope="col">Account Creation</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT * FROM `users` WHERE add_status=0";
+                $sql = "SELECT * FROM `users` WHERE `add_status` = 0";
                 $result = mysqli_query($conn, $sql);
                 $sno = 0;
                 $right = NULL;
@@ -119,8 +133,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       <th scope="row">' . $sno . '  </th>
       <td>' . $row['psno'] . '</td>
       <td>' . $row['user_email'] . '</td>
-      <td>' . $row['timestamp'] . '</td>     
-      <td><button class="btn btn-success btn-sm my-2 my-sm-0 delete" type="submit" id="' . $row['sno'] . '">Update</button>
+      <td>' . $row['timestamp'] . '</td>
+     
+      <td><button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Update</button>
       </td>
     </tr>';
                 }
@@ -153,29 +168,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             element.addEventListener("click", (e) => {
                 console.log("Edit");
                 tr = e.target.parentNode.parentNode;
-                title = tr.getElementsByTagName("td")[0].innerText;
-                description = tr.getElementsByTagName("td")[1].innerText;
-                console.log(title);
-                console.log(description);
-                titleEdit.value = title;
-                descriptionEdit.value = description;
+                psno = tr.getElementsByTagName("td")[0].innerText;
+                user_email = tr.getElementsByTagName("td")[1].innerText;
+                timestamp = tr.getElementsByTagName("td")[2].innerText;
+                psnoEdit.value = psno;
+                useremailEdit.value = user_email;
+                timestampEdit.value = timestamp;
                 snoEdit.value = e.target.id;
                 console.log(e.target.id);
                 $('#editModal').modal('toggle');
             });
-        });
-        deletes = document.getElementsByClassName('delete');
-        Array.from(deletes).forEach((element) => {
-            element.addEventListener("click", (e) => {
-                console.log("delete", e);
-                sno = e.target.id.substr(1, );
-                console.log(sno);
-                if (confirm("Are you sure to delete this note?")) {
-                    window.location = `error.php?sno=${sno}`;
-                } else {
-                    console.log("no");
-                }
-            })
         });
     </script>
 </body>

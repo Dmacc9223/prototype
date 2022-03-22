@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     ?>
     <!--PHP-->
     <!-- <div class="container"> -->
-    <h2 class="text-center">Log Source </h2>
+    <h2 class="text-center">Knowledge Base </h2>
     <table class="table" id="myTable">
     <caption>Log Sources</caption>
 
@@ -207,10 +207,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 <th scope="col">S.No.</th>
                 <th scope="col">date</th>
                 <th scope="col">Offense</th>
-                <th scope="col">Knowledge Desc</th>
-                <th scope="col">Knowledge Desc</th>
-                <th scope="col">RPT</th>
-                <th scope="col">RPT</th>
+                <th scope="col">Offense Description</th>
+                <th scope="col">Knowledge Addition</th>
+                <th scope="col">Response from team</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -348,6 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
       })
     });
+    
   </script>
 </body>
 

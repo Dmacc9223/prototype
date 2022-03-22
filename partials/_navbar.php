@@ -38,14 +38,16 @@ echo '<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
   if ($right == 2) {
     echo '<li class="nav-item">
-      <a class="nav-link" href="/prototype/adminpanel.php">User Management</a>
-      </li>';
+    <a class="nav-link" href="/prototype/adminpanel.php">User Management</a>
+    </li><li class="nav-item">
+    <a class="nav-link" href="/prototype/user_approve.php">User Approve</a>
+    </li>';
   }
 }
 echo '     
   </ul>';
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
-  echo ' <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Loggedin ID">Logged in as: <b>' . $_SESSION['psno'] . '</b>
+  echo ' <button type="button" class="btn btn-secondary" data-placement="top" title="Loggedin ID"  data-toggle="modal" data-target="#password">Logged in as: <b>' . $_SESSION['psno'] . '</b>
   </button>
   <a href="/prototype/partials/_logout.php" class="btn btn-danger my-2 mx-2 my-sm-0" type="submit">Logout</a>';
 } else {
@@ -59,6 +61,7 @@ echo '
 </nav>';
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 include "$root/prototype/partials/_loginModal.php";
+include "$root/prototype/partials/_passwordmgmt.php";
 include "$root/prototype/partials/_signupModal.php";
 if (isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "true") {
   echo '<div class="alert alert-success alert-dismissible fade show my-0" role="alert">

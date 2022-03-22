@@ -36,7 +36,7 @@
                 <form action="submenu.php" method="POST">
                     <input type="hidden" name="catid" id="'.$id.'" value="' . $id . '">
                 <input type="submit" class="btn btn-primary" value="Submit">
-                </form>
+                </form> 
                 </div>
             </div>
         </div>';

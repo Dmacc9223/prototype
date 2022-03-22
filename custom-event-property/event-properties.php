@@ -18,6 +18,21 @@ $insert = false;
 $edit = false;
 $delete = false;
 $entryError = false;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (isset($_POST['project'])) {
+    $project = $conn->real_escape_string($_POST['project']);
+    $_SESSION['project'] = $project;
+  }
+}
+// if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+//   if (!isset($_SESSION['project'])) {
+//     $_SESSION['project'] = $project;
+//   }
+// } 
+if (isset($_SESSION['project'])) {
+  $project = $_SESSION['project'];
+  $project;
+}
 if (isset($_GET['delete'])) {
   $sno = $_GET['delete'];
   $sql = "DELETE FROM `custom-event-properties` WHERE `sno` = ? ";
@@ -35,15 +50,12 @@ if (isset($_GET['delete'])) {
   }
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  if (isset($_GET['project'])) {
-    $project = $conn->real_escape_string($_GET['project']);
-  }
-  if (isset($_GET['snoEdit'])) {
-    $sno = $conn->real_escape_string($_GET['snoEdit']);
-    $logsource = $conn->real_escape_string($_GET['logsourceEdit']);
-    $name = $conn->real_escape_string($_GET['nameEdit']);
-    $regex = $conn->real_escape_string($_GET['regexEdit']);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (isset($_POST['snoEdit'])) {
+    $sno = $conn->real_escape_string($_POST['snoEdit']);
+    $logsource = $conn->real_escape_string($_POST['logsourceEdit']);
+    $name = $conn->real_escape_string($_POST['nameEdit']);
+    $regex = $conn->real_escape_string($_POST['regexEdit']);
     $sql = "UPDATE `custom-event-properties` SET `log-source-type`=?,`name`=?,`regex`=? WHERE `custom-event-properties`.`sno`=$sno;";
 
     $stmt = mysqli_stmt_init($conn);
@@ -60,20 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       }
     }
   } else {
-    if (isset($_GET['insert'])) {
-      $logsource = $conn->real_escape_string($_GET['log-source']);
-      $name = $conn->real_escape_string($_GET['name']);
-      $regex = $conn->real_escape_string($_GET['regex']);
-      $sql = "INSERT INTO `custom-event-properties`(`log-source-type`, `name`, `regex`, `parent-id`) VALUES (?,?,?,?)";
-
+    if (isset($_POST['insert'])) {
+      $logsource = $conn->real_escape_string($_POST['log-source']);
+      $name = $conn->real_escape_string($_POST['name']);
+      $regex = $conn->real_escape_string($_POST['regex']);
+      $sql = "INSERT INTO `custom-event-properties`(`log-source-type`, `name`, `regex`, `parent_id`) VALUES (?,?,?,?)";
       $stmt = mysqli_stmt_init($conn);
       if (!mysqli_stmt_prepare($stmt, $sql)) {
         echo "Failed!";
       } else {
         mysqli_stmt_bind_param($stmt, "ssss", $logsource, $name, $regex, $project);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if (mysqli_stmt_execute($stmt)) {
+        $result = mysqli_stmt_execute($stmt);
+        if ($result) {
           $insert = true;
         }
       }
@@ -109,12 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
           </button>
         </div>
         <div class="modal-body">
-          <form action="event-properties.php" method="GET">
+          <form action="event-properties.php" method="POST">
             <input type="hidden" name="snoEdit" id="snoEdit">
-            <input type="hidden" name="project" value="<?php $project; ?>" id="project">
             <div class="form-group">
               <label for="exampleInputEmail1">Title of the custom-event-properties</label>
               <input type="text" class="form-control" id="logsourceEdit" name="logsourceEdit" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+              <input type="hidden" class="form-control" id="projectEdit" name="projectEdit" aria-describedby="emailHelp">
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Description of the custom-event-properties</label>
@@ -177,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   <!-- <div class="container"> -->
   <h2 class="text-center my-4">Custom Event properties </h2>
   <table class="table" id="myTable">
-  <caption>Custom Events</caption>
+    <caption>Custom Events</caption>
 
     <thead>
       <tr>
@@ -185,35 +197,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         <th scope="col">Log Source</th>
         <th scope="col">Name</th>
         <th scope="col">Regex</th>
+        <th scope="col" hidden>Regex</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
       <?php
-      $sql = "SELECT * FROM `custom-event-properties`";
+      $sql = "SELECT * FROM `custom-event-properties` WHERE `parent_id`=$project";
       $result = mysqli_query($conn, $sql);
       $sno = 0;
       while ($row = mysqli_fetch_assoc($result)) {
         $sno = $sno + 1;
         echo '<tr>
-      <th scope="row">' . $sno . '  </th>
-      <td>' . $row['log-source-type'] . '</td>
-      <td>' . $row['name'] . '</td>
-      <td>' . $row['regex'] . '</td>
-      <td>';
+        <th scope="row">' . $sno . '  </th>
+        <td>' . $row['log-source-type'] . '</td>
+        <td>' . $row['name'] . '</td>
+        <td>' . $row['regex'] . '</td>
+        <td hidden>' . $project . '</td>
+        <td>';
         if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
           if ($right == 1 or $right == 2) {
-            echo '<button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-danger my-2 mx-1 my-sm-0 delete" type="submit" id="d' . $row['sno'] . '">Delete</button>';
+            echo '<button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-danger my-2 mx-1 my-sm-0 delete" type="submit" id="d' . $row['sno'] . '">' . $row['sno'] . '</button>';
           }
           if ($right == 0) {
-            echo '<button class="btn btn-secondary btn-sm my-2 my-sm-0" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-secondary my-2 mx-1 my-sm-0" type="submit" id="d' . $row['sno'] . '">Delete</button>';
+            echo '<button class="btn btn-secondary btn-sm my-2 my-sm-0" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-secondary my-2 mx-1 my-sm-0" type="submit" id="d' . $row['sno'] . '">' . $row['sno'] . '</button>';
           }
         }
       ?>
       <?php
         echo '</td>
-      </tr>
-      ';
+        </tr>
+        ';
       }
       ?>
     </tbody>
@@ -225,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if ($right == 1 or $right == 2) {
       echo '<div class="container my-4" id="addnote">
       <h1>Log Source</h1>
-      <form action="event-properties.php" method="GET">
+      <form action="event-properties.php" method="POST">
         <div class="form-group">
         <input type="hidden" name="project" value="' . $project . '">
         <input type="hidden" name="insert" value="insert">
@@ -272,11 +286,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         logsource = tr.getElementsByTagName("td")[0].innerText;
         name = tr.getElementsByTagName("td")[1].innerText;
         regex = tr.getElementsByTagName("td")[2].innerText;
+        project = tr.getElementsByTagName("td")[3].innerText;
         console.log(logsource);
         console.log(name);
         logsourceEdit.value = logsource;
         nameEdit.value = name;
         regexEdit.value = regex;
+        projectEdit.value = project;
         snoEdit.value = e.target.id;
         console.log(e.target.id);
         $('#editModal').modal('toggle');
@@ -288,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         console.log("delete", e);
         sno = e.target.id.substr(1, );
         if (confirm("Are you sure to delete this note?")) {
-          window.location = `event-properties.php?project=<?php echo $project; ?>&delete=${sno}`;
+          window.location = `event-properties.php?delete=${sno}`;
         } else {
           console.log("no");
         }
