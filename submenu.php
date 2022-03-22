@@ -42,7 +42,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Custom Event Proeprties for <?php echo $project; ?></h5>
+                        <h5 class="card-title">Custom Event Properties</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                         <form action="custom-event-property/event-properties.php" method="POST">
                             <input type="hidden" name="project" id="project" value="<?php echo $project; ?>">

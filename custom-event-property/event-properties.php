@@ -203,7 +203,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </thead>
     <tbody>
       <?php
-      $sql = "SELECT * FROM `custom-event-properties` WHERE `parent_id`=$project";
+      $sql = "SELECT * FROM `custom-event-properties` WHERE `parent_id`=?";
+
+      $stmt = mysqli_stmt_init($conn);
+      if (!mysqli_stmt_prepare($stmt, $sql)) {
+        echo "Failed!";
+      } else {
+        mysqli_stmt_bind_param($stmt, "s", $project);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if (mysqli_stmt_execute($stmt)) {
+          $delete = true;
+        }
+      }
+
+
       $result = mysqli_query($conn, $sql);
       $sno = 0;
       while ($row = mysqli_fetch_assoc($result)) {
