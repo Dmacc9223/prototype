@@ -217,10 +217,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <td>';
         if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
           if ($right == 1 or $right == 2) {
-            echo '<button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-danger my-2 mx-1 my-sm-0 delete" type="submit" id="d' . $row['sno'] . '">' . $row['sno'] . '</button>';
+            echo '<button class="btn btn-success btn-sm my-2 my-sm-0 edit" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-danger my-2 mx-1 my-sm-0 delete" type="submit" id="d' . $row['sno'] . '">Delete</button>';
           }
           if ($right == 0) {
-            echo '<button class="btn btn-secondary btn-sm my-2 my-sm-0" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-secondary my-2 mx-1 my-sm-0" type="submit" id="d' . $row['sno'] . '">' . $row['sno'] . '</button>';
+            echo '<button class="btn btn-secondary btn-sm my-2 my-sm-0" type="submit" id="' . $row['sno'] . '">Edit</button><button class="btn btn-sm btn-secondary my-2 mx-1 my-sm-0" type="submit" id="d' . $row['sno'] . '">Delete</button>';
           }
         }
       ?>

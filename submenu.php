@@ -33,7 +33,9 @@
                     <div class="card-body">
                         <h5 class="card-title">Knowledge Base</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="knowledge-base/knowledge-base.php?project=<?php echo htmlspecialchars($project); ?>" class="btn btn-primary">View</a>
+                        <form action="knowledge-base/knowledge-base.php" method="POST">
+                            <input type="hidden" name="project" id="project" value="<?php echo $project; ?>">
+                            <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
                 </div>
             </div>
@@ -45,7 +47,6 @@
                         <form action="custom-event-property/event-properties.php" method="POST">
                             <input type="hidden" name="project" id="project" value="<?php echo $project; ?>">
                             <input type="submit" class="btn btn-primary" value="Submit">
-                            <!-- <a href="custom-event-property/event-properties.php?project=<?php echo $project; ?>" class="btn btn-primary">View</a> -->
                     </div>
                 </div>
             </div>
