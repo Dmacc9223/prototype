@@ -1,4 +1,5 @@
 <?php
+include "_dbconnect.php";
     if (isset($_POST['passwordmgmt'])) {
         $pass = $conn->real_escape_string($_POST['pass']);
         $cpass = $conn->real_escape_string($_POST['cpass']);
@@ -18,7 +19,7 @@
     }
 
 ?>
-<div class="modal fade" id="password" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="password" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -46,4 +47,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

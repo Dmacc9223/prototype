@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // } 
 if (isset($_SESSION['project'])) {
   $project = $_SESSION['project'];
-  $project;
 }
 if (isset($_GET['delete'])) {
   $sno = $_GET['delete'];
@@ -197,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <th scope="col">Log Source</th>
         <th scope="col">Name</th>
         <th scope="col">Regex</th>
-        <th scope="col" hidden>Regex</th>
+        <th scope="col" hidden>project</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -218,7 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       }
 
 
-      $result = mysqli_query($conn, $sql);
       $sno = 0;
       while ($row = mysqli_fetch_assoc($result)) {
         $sno = $sno + 1;

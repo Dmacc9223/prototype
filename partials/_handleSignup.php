@@ -19,30 +19,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($numRows > 0) {
             $showError = "Email or PS Number already in use";
         } else {
-            if ($pass == $cpass) {
-                $hash = password_hash($pass, PASSWORD_DEFAULT);
-                $sql = "INSERT INTO `users` (`psno`, `user_email`, `user_pass`, `rights`, `add_status`) VALUES (?,?,?,?,?);";
+            if (strlen($pass) > 6) {
+                if ($pass == $cpass) {
+                    $hash = password_hash($pass, PASSWORD_DEFAULT);
+                    $sql = "INSERT INTO `users` (`psno`, `user_email`, `user_pass`, `rights`, `add_status`) VALUES (?,?,?,?,?);";
+    
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        echo "Failed!";    
+                    }
+                    else {
+                        $val = '0';
+                        mysqli_stmt_bind_param($stmt, "sssss", $psno, $user_email, $hash, $val, $val);
+                        $result = mysqli_stmt_execute($stmt);
+                        // $result = mysqli_stmt_get_result($stmt);
+                    if ($result) {
+                        $showAlert = true;
+                        header("Location: /prototype/index.php?signupsuccess=true");
+                        exit();
+                    }
+                }
+                } else {
+                    $showError = "passwords doesnot matched";
+                }
+            }
+            else {
+                $showError = "Please provide more than 6 characters password";
+            }
 
-                $stmt = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    echo "Failed!";    
-                }
-                else {
-                    $val = '0';
-                    mysqli_stmt_bind_param($stmt, "sssss", $psno, $user_email, $hash, $val, $val);
-                    $result = mysqli_stmt_execute($stmt);
-                    // $result = mysqli_stmt_get_result($stmt);
-                if ($result) {
-                    $showAlert = true;
-                    header("Location: /prototype/index.php?signupsuccess=true");
-                    exit();
-                }
-            }
-            } else {
-                $showError = "passwords doesnot matched";
-            }
+
         }
         header("Location: /prototype/index.php?signupsuccess=false&error=$showError");
     }
 }
-?>

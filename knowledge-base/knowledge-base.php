@@ -139,23 +139,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="hidden" name="snoEdit" id="snoEdit">
                         <input type="hidden" name="project" id="project" value="<?php echo $project ?>">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Title of the knowledge-base</label>
+                            <label for="exampleInputEmail1">Date</label>
                             <input type="date" class="form-control" id="dateEdit" name="dateEdit" aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Description of the knowledge-base</label>
+                            <label for="exampleInputPassword1">Offense</label>
                             <input type="text" class="form-control" id="offenseEdit" name="offenseEdit">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Description of the knowledge-base</label>
+                            <label for="exampleInputPassword1">offense Description</label>
                             <textarea type="text" class="form-control" id="offensedescEdit" name="offensedescEdit"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Description of the knowledge-base</label>
+                            <label for="exampleInputPassword1">Knowledge base</label>
                             <textarea type="text" class="form-control" id="knowledgeaddEdit" name="knowledgeaddEdit"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Description of the knowledge-base</label>
+                            <label for="exampleInputPassword1">Response from team</label>
                             <textarea type="text" class="form-control" id="rptEdit" name="rptEdit"></textarea>
                         </div>
                 </div>
